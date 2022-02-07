@@ -48,7 +48,7 @@ class User:
 
 
 class Downloader:
-    max_threads = 4
+    max_threads = 6
     threads = list()
     download_queue = list()
 
