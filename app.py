@@ -41,7 +41,10 @@ if len(courses) > 0:
         course.fetch_activities()
         i = 1
         for activity in course.activities:
-            print("%d) Hafta: %d Dosya Adı: %s" % (i, activity.weeks[0], activity.slug_name))
+            try:
+                print("%d) Hafta: %d Dosya Adı: %s" % (i, activity.weeks[0], activity.slug_name))
+            except:
+                continue
             i += 1
     print("İçerik aralığı seçiniz (Örn: 1-17): ")
     activity_selection = input().split('-')
