@@ -67,8 +67,7 @@ while len(courses) > 0 and choose_again:
 
 if activities:
     start = time.time()
-    print(downloader.download_queue)
-    # downloader.start_downloads()
+    downloader.start_downloads()
     end = time.time()
     print(human_readable_seconds(end - start) + " sürdü.")
 else:
