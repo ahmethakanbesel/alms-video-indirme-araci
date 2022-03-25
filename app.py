@@ -28,7 +28,9 @@ print("Ders listesi alınıyor.")
 user = User(domain, cookies)
 courses = user.get_enrolled_courses()
 downloader = Downloader()
-if len(courses) > 0:
+activities = []
+choose_again = True
+while len(courses) > 0 and choose_again:
     i = 1
     for course in courses:
         print(str(i) + ". " + course.name + " (" + str(course.activity_count) + ")")
@@ -59,7 +61,15 @@ if len(courses) > 0:
             for i in range(start_activity - 1, end_activity):
                 activity = courses[course_selection].activities[i]
                 activity.prepare_video(downloader)
-            start = time.time()
-            downloader.start_downloads()
-            end = time.time()
-            print(human_readable_seconds(end - start) + " sürdü.")
+                activities.append(activity)
+    print("Başka bir dersten içerik seçmek ister misiniz? (e/h)")
+    choose_again = input().lower() == "e"
+
+if activities:
+    start = time.time()
+    print(downloader.download_queue)
+    # downloader.start_downloads()
+    end = time.time()
+    print(human_readable_seconds(end - start) + " sürdü.")
+else:
+    print("İçerik seçilmedi.")

@@ -137,6 +137,7 @@ class Course:
                 if activity['type'] == "Video" and activity['typeName'] == "Video":
                     activity = Activity(activity)
                     activity.main_url = self.main_url
+                    activity.download_folder += self.name + "/"
                     self.activities.append(activity)
 
 
@@ -146,6 +147,7 @@ class Activity:
     slug_name = ""
     type = ""
     type_name = ""
+    download_folder = ""
     file_exists = False
     weeks = []
     thumbnail_path = ""
@@ -167,9 +169,10 @@ class Activity:
         self.date = activity['addedDate']
         self.slugify_name()
         self.fetch_videos()
+        self.download_folder = DOWNLOAD_FOLDER
 
     def fetch_videos(self):
-        if self.file_exists and self.type == "Video" and self.type_name == "Video":
+        if self.type == "Video" and self.type_name == "Video":
             video = Video(self.id, LMS_URL)
             if video.url:
                 self.video = video
@@ -188,9 +191,9 @@ class Activity:
         # self.slug_name += "W" + "0" + str(self.weeks[0]) if self.weeks[0] < 10 else str(self.weeks[0])
 
     def prepare_video(self, downloader):
-        if not os.path.exists(DOWNLOAD_FOLDER):
-            os.makedirs('downloads')
-        downloader.add_to_queue(self.video.url, self.slug_name, self.video.extension, DOWNLOAD_FOLDER)
+        if not os.path.exists(self.download_folder):
+            os.makedirs(self.download_folder)
+        downloader.add_to_queue(self.video.url, self.slug_name, self.video.extension, self.download_folder)
 
 
 class Video:
