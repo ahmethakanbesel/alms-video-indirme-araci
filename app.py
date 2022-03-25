@@ -62,7 +62,6 @@ while len(courses) > 0 and choose_again:
                 for i in range(start_activity - 1, end_activity):
                     activity = course.activities[i]
                     activity.prepare_video(downloader)
-                    print(activity)
                     selected_activities.append(activity)
                 print("Başka bir dersten içerik seçmek ister misiniz? (e/h)")
                 choose_again = input().lower() == "e"
