@@ -49,23 +49,23 @@ while len(courses) > 0 and choose_again:
             except:
                 continue
             i += 1
-    print("İçerik aralığı seçiniz (Örn: 1-17): ")
-    activity_selection = input().split('-')
-    while len(activity_selection) != 2:
-        print("Lütfen geçerli bir aralık giriniz.")
+        print("İçerik aralığı seçiniz (Örn: 1-17): ")
         activity_selection = input().split('-')
-    if len(activity_selection) == 2:
-        start_activity = int(activity_selection[0])
-        end_activity = int(activity_selection[1])
-        if end_activity - start_activity >= 0 and start_activity > 0 and 0 < end_activity <= len(
-                courses[course_selection].activities):
-            for i in range(start_activity - 1, end_activity):
-                activity = courses[course_selection].activities[i]
-                activity.prepare_video(downloader)
-                selected_activities.append(activity)
-    print("Başka bir dersten içerik seçmek ister misiniz? (e/h)")
-    choose_again = input().lower() == "e"
-    del course
+        while len(activity_selection) != 2:
+            print("Lütfen geçerli bir aralık giriniz.")
+            activity_selection = input().split('-')
+        if len(activity_selection) == 2:
+            start_activity = int(activity_selection[0])
+            end_activity = int(activity_selection[1])
+            if end_activity - start_activity >= 0 and start_activity > 0 and 0 < end_activity <= len(
+                    course.activities):
+                for i in range(start_activity - 1, end_activity):
+                    activity = course.activities[i]
+                    activity.prepare_video(downloader)
+                    print(activity)
+                    selected_activities.append(activity)
+                print("Başka bir dersten içerik seçmek ister misiniz? (e/h)")
+                choose_again = input().lower() == "e"
 
 if selected_activities:
     start = time.time()
@@ -73,4 +73,5 @@ if selected_activities:
     end = time.time()
     print(human_readable_seconds(end - start) + " sürdü.")
 else:
+    print(selected_activities)
     print("İçerik seçilmedi.")
