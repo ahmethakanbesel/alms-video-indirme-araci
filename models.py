@@ -134,7 +134,7 @@ class Course:
             self.id = self.page_data['courseId']
             self.lecturers = self.page_data['teachers']
             for activity in self.page_data['activities']:
-                if activity['fileExists'] and activity['type'] == "Video" and activity['typeName'] == "Video":
+                if activity['type'] == "Video" and activity['typeName'] == "Video":
                     activity = Activity(activity)
                     activity.main_url = self.main_url
                     self.activities.append(activity)
@@ -161,6 +161,8 @@ class Activity:
         self.type_name = activity['typeName']
         self.file_exists = activity['fileExists']
         self.weeks = activity['weeks']
+        if not self.weeks:
+            self.weeks = [0]
         self.thumbnail_path = activity['thumbnailPath']
         self.date = activity['addedDate']
         self.slugify_name()
