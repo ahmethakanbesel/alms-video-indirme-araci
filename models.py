@@ -59,7 +59,7 @@ class Downloader:
 
     def task(self, url, id, file_path):
         self.semaphore.acquire()
-        self.download(url, file_path)
+        self.download_legacy(url, file_path)
         history = open("history.txt", "a") 
         history.write(id)
         history.write("\n")
@@ -73,7 +73,7 @@ class Downloader:
             file_name += "_" + str(i)
         self.download_queue.append((url, id, file_path + file_name + "." + file_extension))
 
-    def download(self, url, file_path):
+    def download_legacy(self, url, file_path):
         print(file_path + " indirmesi başladı.")
         import pycurl
         with open(file_path, 'wb') as f:
@@ -88,18 +88,33 @@ class Downloader:
             c.close()
         print(file_path + " indirmesi bitti.")
 
-    def download_legacy(self, url, file_path):
+    def download(self, url, file_path):
+        # Read the cookies from the text file
+        with open("cookies.txt", "r") as f:
+            cookies_str = f.read().strip()
+        
+        # Convert the cookies string to a dictionary
+        cookies = {}
+        for cookie in cookies_str.split(";"):
+            key, value = cookie.strip().split("=", 1)
+            cookies[key] = value
+        
+        # Set the headers to include the user agent and cookies
         headers = {
-            'User-Agent': USER_AGENT,
-            'Referer': url,
-            'Cookie': open('cookies.txt', 'r').read()
+            "User-Agent": USER_AGENT,
+            "Cookie": cookies_str,
         }
-        with requests.get(url, stream=True, headers=headers) as r:
-            r.raise_for_status()
-            with open(file_path, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=1024):
-                    f.write(chunk)
 
+        # Send a request to the server to download the video file
+        response = requests.get(url, headers=headers, stream=True)
+
+        # Open a local file to write the video data to
+        with open(file_path, "wb") as f:
+            # Iterate over the response content in chunks and write to file
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
+                    
     def start_downloads(self):
         threads = [threading.Thread(name="worker/task", target=self.task, args=(video_data[0], video_data[1], video_data[2])) for
                    video_data in
