@@ -1,5 +1,9 @@
+import json
+import os
 import time
 from models import Downloader, User
+
+SETTINGS_FILE = "settings.json"
 
 
 def human_readable_seconds(seconds):
@@ -14,16 +18,40 @@ def human_readable_seconds(seconds):
         return str(int(seconds // 3600)) + " gün"
 
 
-print("Uzaktan eğitim websitesi adresini giriniz: (https:// olmadan)")
+# Check if the JSON file exists
+if os.path.exists(SETTINGS_FILE):
+    # If the file exists, open it and load its contents
+    with open(SETTINGS_FILE, "r") as f:
+        data = json.load(f)
+else:
+    # If the file doesn't exist, create it with default contents
+    data = {"domain": None}
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(data, f)
+
+if data['domain'] is None:
+    print("Uzaktan eğitim websitesi adresini giriniz: (https:// olmadan)")
+else:
+    print(f"Uzaktan eğitim websitesi adresini giriniz: ({data['domain']} için enter)")
+
 domain = input()
-while domain == "":
+while domain == "" and data['domain'] is None:
     print("Lütfen geçerli bir adres giriniz.")
     domain = input()
+
+if data['domain'] is None and domain != "":
+    data['domain'] = domain
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(data, f)
+elif data['domain'] is not None and domain == "":
+    domain = data['domain']
+
 print("Çerezleri giriniz:")
 cookies = input()
 while cookies == "":
     print("Çerezler boş bırakılamaz.")
     cookies = input()
+
 print("Ders listesi alınıyor.")
 user = User(domain, cookies)
 courses = user.get_enrolled_courses()
@@ -47,7 +75,8 @@ while len(courses) > 0 and choose_again:
         for activity in course.activities:
             try:
                 if activity.id in previous_downloads:
-                    print("%d) Hafta: %d Dosya Adı: %s (Daha önce indirilmiş.)" % (i, activity.weeks[0], activity.slug_name))
+                    print("%d) Hafta: %d Dosya Adı: %s (Daha önce indirilmiş.)" % (
+                        i, activity.weeks[0], activity.slug_name))
                 else:
                     print("%d) Hafta: %d Dosya Adı: %s" % (i, activity.weeks[0], activity.slug_name))
             except:
