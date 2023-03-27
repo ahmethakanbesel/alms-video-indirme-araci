@@ -60,7 +60,7 @@ class Downloader:
     def task(self, url, id, file_path):
         self.semaphore.acquire()
         self.download_legacy(url, file_path)
-        history = open("history.txt", "a") 
+        history = open("history.txt", "a", encoding="utf-8")
         history.write(id)
         history.write("\n")
         self.semaphore.release()

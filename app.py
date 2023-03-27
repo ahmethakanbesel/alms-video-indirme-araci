@@ -30,6 +30,7 @@ courses = user.get_enrolled_courses()
 downloader = Downloader()
 selected_activities = []
 choose_again = True
+previous_downloads = set(line.strip() for line in open("history.txt", encoding="utf-8"))
 while len(courses) > 0 and choose_again:
     i = 1
     for course in courses:
@@ -45,7 +46,10 @@ while len(courses) > 0 and choose_again:
         i = 1
         for activity in course.activities:
             try:
-                print("%d) Hafta: %d Dosya Adı: %s" % (i, activity.weeks[0], activity.slug_name))
+                if activity.id in previous_downloads:
+                    print("%d) Hafta: %d Dosya Adı: %s (Daha önce indirilmiş.)" % (i, activity.weeks[0], activity.slug_name))
+                else:
+                    print("%d) Hafta: %d Dosya Adı: %s" % (i, activity.weeks[0], activity.slug_name))
             except:
                 continue
             i += 1
