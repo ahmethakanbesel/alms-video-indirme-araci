@@ -73,22 +73,8 @@ class Downloader:
             file_name += "_" + str(i)
         self.download_queue.append((url, id, file_path + file_name + "." + file_extension))
 
-    def download_legacy(self, url, file_path):
-        print(file_path + " indirmesi başladı.")
-        import pycurl
-        with open(file_path, 'wb') as f:
-            c = pycurl.Curl()
-            c.setopt(c.URL, url)
-            c.setopt(c.USERAGENT, USER_AGENT)
-            c.setopt(c.HTTPHEADER, ['Referer: ' + url, 'Cookie: ' + open('cookies.txt', 'r').read()])
-            c.setopt(c.SSL_VERIFYPEER, 0)
-            c.setopt(c.SSL_VERIFYHOST, 0)
-            c.setopt(c.WRITEDATA, f)
-            c.perform()
-            c.close()
-        print(file_path + " indirmesi bitti.")
-
     def download(self, url, file_path):
+        print(file_path + " indirmesi başladı.")
         # Read the cookies from the text file
         with open("cookies.txt", "r") as f:
             cookies_str = f.read().strip()
@@ -114,6 +100,7 @@ class Downloader:
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
+        print(file_path + " indirmesi bitti.")
 
     def start_downloads(self):
         threads = [
