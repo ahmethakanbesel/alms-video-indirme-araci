@@ -18,6 +18,11 @@ def human_readable_seconds(seconds):
         return str(int(seconds // 3600)) + " gün"
 
 
+# Create history file if it does not exist
+if not os.path.exists("history.txt"):
+    with open("history.txt", "w") as f:
+        f.write("")
+
 # Check if the JSON file exists
 if os.path.exists(SETTINGS_FILE):
     # If the file exists, open it and load its contents
