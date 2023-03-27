@@ -92,13 +92,13 @@ class Downloader:
         # Read the cookies from the text file
         with open("cookies.txt", "r") as f:
             cookies_str = f.read().strip()
-        
+
         # Convert the cookies string to a dictionary
         cookies = {}
         for cookie in cookies_str.split(";"):
             key, value = cookie.strip().split("=", 1)
             cookies[key] = value
-        
+
         # Set the headers to include the user agent and cookies
         headers = {
             "User-Agent": USER_AGENT,
@@ -114,11 +114,13 @@ class Downloader:
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
-                    
+
     def start_downloads(self):
-        threads = [threading.Thread(name="worker/task", target=self.task, args=(video_data[0], video_data[1], video_data[2])) for
-                   video_data in
-                   self.download_queue]
+        threads = [
+            threading.Thread(name="worker/task", target=self.task, args=(video_data[0], video_data[1], video_data[2]))
+            for
+            video_data in
+            self.download_queue]
         for thread in threads:
             thread.start()
         for thread in threads:
@@ -211,7 +213,8 @@ class Activity:
     def prepare_video(self, downloader):
         if not os.path.exists(self.download_folder):
             os.makedirs(self.download_folder)
-        downloader.add_to_queue(self.video.url, self.video.id, self.slug_name, self.video.extension, self.download_folder)
+        downloader.add_to_queue(self.video.url, self.video.id, self.slug_name, self.video.extension,
+                                self.download_folder)
 
 
 class Video:
