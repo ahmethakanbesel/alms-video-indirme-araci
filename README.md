@@ -5,7 +5,6 @@ Advancity LMS sistemi kullanan sitelerden ders videolarını indirmenizi sağlar
 ## Gereksinimler
 
 - Python 3.6.5 veya üstü
-- pycurl
 
 ## Kurulum
 
