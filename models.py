@@ -57,18 +57,21 @@ class Downloader:
     def __init__(self):
         pass
 
-    def task(self, url, file_path):
+    def task(self, url, id, file_path):
         self.semaphore.acquire()
         self.download(url, file_path)
+        history = open("history.txt", "a") 
+        history.write(id)
+        history.write("\n")
         self.semaphore.release()
 
-    def add_to_queue(self, url, file_name="", file_extension="mp4", file_path=DOWNLOAD_FOLDER):
+    def add_to_queue(self, url, id="", file_name="", file_extension="mp4", file_path=DOWNLOAD_FOLDER):
         i = 2
         if exists(file_path + file_name + "." + file_extension):
             while exists(file_path + file_name + "." + file_extension + "_" + str(i)):
                 i += 1
             file_name += "_" + str(i)
-        self.download_queue.append((url, file_path + file_name + "." + file_extension))
+        self.download_queue.append((url, id, file_path + file_name + "." + file_extension))
 
     def download(self, url, file_path):
         print(file_path + " indirmesi başladı.")
@@ -98,7 +101,7 @@ class Downloader:
                     f.write(chunk)
 
     def start_downloads(self):
-        threads = [threading.Thread(name="worker/task", target=self.task, args=(video_data[0], video_data[1])) for
+        threads = [threading.Thread(name="worker/task", target=self.task, args=(video_data[0], video_data[1], video_data[2])) for
                    video_data in
                    self.download_queue]
         for thread in threads:
@@ -193,7 +196,7 @@ class Activity:
     def prepare_video(self, downloader):
         if not os.path.exists(self.download_folder):
             os.makedirs(self.download_folder)
-        downloader.add_to_queue(self.video.url, self.slug_name, self.video.extension, self.download_folder)
+        downloader.add_to_queue(self.video.url, self.video.id, self.slug_name, self.video.extension, self.download_folder)
 
 
 class Video:
