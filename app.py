@@ -5,19 +5,6 @@ from models import Downloader, User
 
 SETTINGS_FILE = "settings.json"
 
-
-def human_readable_seconds(seconds):
-    seconds = int(seconds)
-    if seconds < 60:
-        return str(seconds) + " saniye"
-    elif seconds < 3600:
-        return str(int(seconds // 60)) + " dakika"
-    elif seconds < 86400:
-        return str(int(seconds // 3600)) + " saat"
-    elif seconds < 604800:
-        return str(int(seconds // 3600)) + " gün"
-
-
 # Create history file if it does not exist
 if not os.path.exists("history.txt"):
     with open("history.txt", "w") as f:
