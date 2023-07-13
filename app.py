@@ -34,22 +34,22 @@ else:
     with open(SETTINGS_FILE, "w") as f:
         json.dump(data, f)
 
-if data['domain'] is None:
+if data["domain"] is None:
     print("Uzaktan eğitim websitesi adresini giriniz: (https:// olmadan)")
 else:
     print(f"Uzaktan eğitim websitesi adresini giriniz: ({data['domain']} için enter)")
 
 domain = input()
-while domain == "" and data['domain'] is None:
+while domain == "" and data["domain"] is None:
     print("Lütfen geçerli bir adres giriniz.")
     domain = input()
 
-if data['domain'] is None and domain != "":
-    data['domain'] = domain
+if data["domain"] is None and domain != "":
+    data["domain"] = domain
     with open(SETTINGS_FILE, "w") as f:
         json.dump(data, f)
-elif data['domain'] is not None and domain == "":
-    domain = data['domain']
+elif data["domain"] is not None and domain == "":
+    domain = data["domain"]
 
 print("Çerezleri giriniz:")
 cookies = input()
@@ -73,30 +73,38 @@ while len(courses) > 0 and choose_again:
     course_selection = int(input())
     if 0 < course_selection <= len(courses):
         course = courses[course_selection - 1]
-        print(course.name + " içeriği yükleniyor")
+        print(course.name + " içeriği yükleniyor.")
         course.activities = []
         course.fetch_activities()
         i = 1
         for activity in course.activities:
             try:
                 if activity.id in previous_downloads:
-                    print("%d) Hafta: %d Dosya Adı: %s (Daha önce indirilmiş.)" % (
-                        i, activity.weeks[0], activity.slug_name))
+                    print(
+                        "%d) Hafta: %d Dosya Adı: %s (Daha önce indirilmiş.)"
+                        % (i, activity.weeks[0], activity.slug_name)
+                    )
                 else:
-                    print("%d) Hafta: %d Dosya Adı: %s" % (i, activity.weeks[0], activity.slug_name))
+                    print(
+                        "%d) Hafta: %d Dosya Adı: %s"
+                        % (i, activity.weeks[0], activity.slug_name)
+                    )
             except:
                 continue
             i += 1
         print("İçerik aralığı seçiniz (Örn: 1-17): ")
-        activity_selection = input().split('-')
+        activity_selection = input().split("-")
         while len(activity_selection) != 2:
             print("Lütfen geçerli bir aralık giriniz.")
-            activity_selection = input().split('-')
+            activity_selection = input().split("-")
         if len(activity_selection) == 2:
             start_activity = int(activity_selection[0])
             end_activity = int(activity_selection[1])
-            if end_activity - start_activity >= 0 and start_activity > 0 and 0 < end_activity <= len(
-                    course.activities):
+            if (
+                end_activity - start_activity >= 0
+                and start_activity > 0
+                and 0 < end_activity <= len(course.activities)
+            ):
                 for i in range(start_activity - 1, end_activity):
                     activity = course.activities[i]
                     activity.prepare_video(downloader)
@@ -108,7 +116,6 @@ if selected_activities:
     start = time.time()
     downloader.start_downloads()
     end = time.time()
-    print(human_readable_seconds(end - start) + " sürdü.")
 else:
     print(selected_activities)
     print("İçerik seçilmedi.")
